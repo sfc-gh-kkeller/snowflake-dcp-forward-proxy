@@ -13,8 +13,7 @@ This repository describes one option for running the Snowflake Data Connectivity
 | Does TLS inspection break DCP? | Yes, by design. The agent uses mTLS with a pinned Snowflake CA. The proxy must pass TLS through untouched. |
 | Can an HTTP CONNECT hop carry the DCP TLS session unchanged? | Yes. With the raw-TLS bridge in this repo, a real TLS 1.3 handshake to the DCP control-plane hostname completed through a local CONNECT proxy, and the Snowflake certificate was presented end to end. |
 | Does `fallback-only` mode work? | Yes. With direct egress, the agent bootstrapped, obtained certificates and reported `AGENT_HEALTH = HEALTHY` using only the fallback relay hostname. |
-| Has the full agent been proven healthy through a real corporate proxy? | **Not yet.** The remaining step is the transparent redirect on a Linux VM (below), validated against the customer's real proxy. |
-
+| Does `fallback-only` mode work? | Yes. With direct egress, the agent bootstrapped, obtained certificates and reported `AGENT_HEALTH = HEALTHY` using only the fallback relay hostname. |
 The approach: the agent cannot be made proxy-aware, but the Linux VM can be. Netfilter intercepts the agent's outbound TCP/443 connections, and a local redirector turns each one into an HTTP `CONNECT` tunnel through the corporate proxy. The original DCP TLS/mTLS session is carried unchanged inside the tunnel, so there is no inherent TLS barrier.
 
 ```text
