@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.log
+.snowflake/
+secrets/
+*token*
+.env
